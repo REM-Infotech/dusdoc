@@ -211,9 +211,17 @@ DataTable.use(DataTablesCore);
                   </template>
                   Realizar Admissão
                 </BTooltip>
-                <BTooltip v-else-if="props.rowData[4] === 'AGUARDANDO ANÁLISE'">
+                <BTooltip v-else-if="props.rowData[4] === 'EM ANDAMENTO'">
                   <template #target>
-                    <button class="btn btn-outline-warning">
+                    <button
+                      class="btn btn-outline-warning"
+                      @click="
+                        router.push({
+                          name: 'validacao',
+                          params: { funcionario_id: 1 },
+                        })
+                      "
+                    >
                       <FontAwesomeIcon :icon="faEye" />
                     </button>
                   </template>

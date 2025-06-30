@@ -33,6 +33,14 @@ const router = createRouter({
         requireAuth: true,
       },
     },
+    {
+      path: "/validacao/:funcionario_id",
+      name: "validacao",
+      component: () => import("@/views/validation/FuncionarioValidation.vue"),
+      meta: {
+        requireAuth: true,
+      },
+    },
     // {
     //   path: "/executions",
     //   name: "executions",
