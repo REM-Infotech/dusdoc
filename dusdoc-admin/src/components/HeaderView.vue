@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { api } from "@/main";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
+import { api } from "../defaults/axios";
 defineProps({
   width_sidebar: {
     type: String,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { api } from "@/main";
+import { api } from "@/defaults/axios";
 import { isAxiosError } from "axios";
 import { BButton, BFormGroup, BFormInput, BModal, BOverlay, useModal } from "bootstrap-vue-next";
 import { reactive, ref, watch } from "vue";

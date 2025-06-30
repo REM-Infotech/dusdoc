@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 
 import logoSystem from "@/assets/img/favicon.png";
 import FooterView from "@/components/FooterView.vue";
-import { api } from "@/main";
+import { api } from "@/defaults/axios";
 import type { LoginForm } from "@/types/forms";
 import { isAxiosError } from "axios";
 import { BOverlay } from "bootstrap-vue-next";

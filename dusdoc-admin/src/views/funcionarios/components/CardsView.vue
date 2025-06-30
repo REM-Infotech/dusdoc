@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { api, pinia } from "@/main";
+import { api } from "@/defaults/axios";
+import { pinia } from "@/main";
 import manager from "@/resouces/socketio";
 import admissionalStore from "@/stores/admissional";
 import funcionariosStore from "@/stores/funcionarios";

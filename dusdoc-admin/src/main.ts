@@ -8,7 +8,7 @@ import { createApp } from "vue";
 import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
 import "bootstrap/dist/css/bootstrap.css";
 
-import axios from "axios";
+import { api } from "@/defaults/axios";
 import App from "./App.vue";
 import "./assets/css/main.css";
 import manager from "./resouces/socketio";
@@ -22,15 +22,6 @@ app.use(bootstrap);
 app.use(pinia);
 app.use(router);
 
-export const api = axios.create({
-  withCredentials: true,
-  withXSRFToken: true,
-  xsrfCookieName: "X-Xsrf-Token",
-  xsrfHeaderName: "X-Xsrf-Token",
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-});
 
 interface ResponseError {
   response?: {
