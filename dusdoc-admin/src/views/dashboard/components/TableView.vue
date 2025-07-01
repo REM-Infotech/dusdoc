@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
 import DataTablesCore from "datatables.net-bs5";
 import DataTable from "datatables.net-vue3";
+import { ref } from "vue";
 
 DataTable.use(DataTablesCore);
 

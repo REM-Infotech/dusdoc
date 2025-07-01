@@ -4,8 +4,8 @@ import { isAxiosError } from "axios";
 import { BButton, BFormGroup, BFormInput, BModal, BOverlay, useModal } from "bootstrap-vue-next";
 import { reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-const { hide: HideModal } = useModal("FormFuncionario");
 
+const { hide: HideModal } = useModal("FormFuncionario");
 const router = useRouter();
 const Form = reactive({
   nome: "",

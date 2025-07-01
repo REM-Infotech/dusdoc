@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import "@/assets/css/main.css";
-import { useRouter } from "vue-router";
-
 import logoSystem from "@/assets/img/favicon.png";
 import FooterView from "@/components/FooterView.vue";
 import { api } from "@/defaults/axios";
@@ -9,7 +7,9 @@ import type { LoginForm } from "@/types/forms";
 import { isAxiosError } from "axios";
 import { BOverlay } from "bootstrap-vue-next";
 import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import type { LoginResponse } from "./types";
+
 const router = useRouter();
 const showOverlayEx1 = ref(false);
 const opacity = ref(0.18);
