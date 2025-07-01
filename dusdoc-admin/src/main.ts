@@ -1,5 +1,4 @@
 import "@/assets/scripts/color-modes";
-import "@/defaults/axios";
 import { api } from "@/defaults/axios";
 import { createBootstrap } from "bootstrap-vue-next";
 import "bootstrap-vue-next/dist/bootstrap-vue-next.css";
