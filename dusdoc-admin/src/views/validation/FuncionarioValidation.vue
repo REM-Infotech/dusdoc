@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { BFormGroup, BFormInput } from "bootstrap-vue-next";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 
-const activeTab = ref<"dados" | "arquivos">("dados");
-
-const form = ref({
+const form = reactive({
   nome: "",
   cpf: "",
   data_nascimento: "",
@@ -22,7 +20,7 @@ const form = ref({
   estadoCivil: "",
 });
 
-const arquivos = ref({
+const arquivos = reactive({
   rg_cnh: "",
   ctps: "",
   comprovante_residencia: "",
@@ -32,86 +30,12 @@ const arquivos = ref({
   certidao_divorcio: "",
 });
 
-function labelArquivo(key: string) {
-  switch (key) {
-    case "rg_cnh":
-      return "RG ou CNH";
-    case "ctps":
-      return "CTPS";
-    case "comprovante_residencia":
-      return "Comprovante de Residência";
-    case "titulo_eleitor":
-      return "Título de Eleitor";
-    case "certidao_reservista":
-      return "Certidão de Reservista";
-    case "certidao_casamento":
-      return "Certidão de Casamento";
-    case "certidao_divorcio":
-      return "Certidão de Divórcio";
-    default:
-      return key;
-  }
-}
-
 const errors = ref<any>({});
 const success = ref(false);
 
-function validateCPF(cpf: string) {
-  cpf = cpf.replace(/\D/g, "");
-  if (cpf.length !== 11 || /^([0-9])\1+$/.test(cpf)) return false;
-  let sum = 0,
-    rest;
-  for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
-  rest = (sum * 10) % 11;
-  if (rest === 10 || rest === 11) rest = 0;
-  if (rest !== parseInt(cpf.substring(9, 10))) return false;
-  sum = 0;
-  for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
-  rest = (sum * 10) % 11;
-  if (rest === 10 || rest === 11) rest = 0;
-  if (rest !== parseInt(cpf.substring(10, 11))) return false;
-  return true;
-}
-
-function isOver14(dateString: string) {
-  if (!dateString) return false;
-  const birthDate = new Date(dateString);
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age >= 14;
-}
-
-function validateCEP(cep: string) {
-  return /^\d{5}-?\d{3}$/.test(cep);
-}
-
-function handleSubmit() {
+function handleSubmit(e: Event) {
+  e.preventDefault();
   errors.value = {};
-  success.value = false;
-  if (!form.value.nome) errors.value.nome = "Nome é obrigatório";
-  if (!form.value.cpf || !validateCPF(form.value.cpf)) errors.value.cpf = "CPF inválido";
-  if (!form.value.data_nascimento || !isOver14(form.value.data_nascimento))
-    errors.value.data_nascimento = "Data inválida ou menor de 14 anos";
-  if (!form.value.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.value.email))
-    errors.value.email = "Email inválido";
-  if (!form.value.telefone || form.value.telefone.length < 10)
-    errors.value.telefone = "Telefone inválido";
-  if (!form.value.cep || !validateCEP(form.value.cep)) errors.value.cep = "CEP inválido";
-  if (!form.value.endereco) errors.value.endereco = "Endereço é obrigatório";
-  if (!form.value.numero_residencia) errors.value.numero_residencia = "Número é obrigatório";
-  if (!form.value.cidade) errors.value.cidade = "Cidade é obrigatória";
-  if (!form.value.estado) errors.value.estado = "Estado é obrigatório";
-  if (!form.value.genero) errors.value.genero = "Gênero é obrigatório";
-  if (!form.value.corRaca) errors.value.corRaca = "Cor/Raça é obrigatória";
-  if (!form.value.grauEscolaridade) errors.value.grauEscolaridade = "Escolaridade é obrigatória";
-  if (!form.value.estadoCivil) errors.value.estadoCivil = "Estado civil é obrigatório";
-  if (Object.keys(errors.value).length === 0) {
-    success.value = true;
-  }
 }
 
 function validState(data: unknown) {
@@ -121,7 +45,7 @@ function validState(data: unknown) {
 
 <template>
   <h1 class="mt-4 fw-bold text-body-secondary">Validação de Dados do Funcionário</h1>
-  <div class="container bg-dark rounded rounded-4 p-2 mt-4">
+  <div class="container-fluid bg-dark rounded rounded-4 p-2 mt-4">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button
@@ -161,7 +85,7 @@ function validState(data: unknown) {
         tabindex="0"
       >
         <div class="p-3">
-          <form @submit.prevent="handleSubmit">
+          <form @submit="handleSubmit">
             <BFormGroup
               class="mb-3"
               id="fieldset-nome"
@@ -330,7 +254,6 @@ function validState(data: unknown) {
         <div>
           <div class="files-list">
             <div v-for="(file, key) in arquivos" :key="key" class="file-item">
-              <span>{{ labelArquivo(key) }}:</span>
               <a v-if="file && typeof file === 'string'" :href="file" target="_blank">Visualizar</a>
               <span v-else>Nenhum arquivo enviado</span>
             </div>

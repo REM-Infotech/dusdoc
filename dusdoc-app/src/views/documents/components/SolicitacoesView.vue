@@ -22,7 +22,7 @@ function checkPrazo(file: Solicitacao) {
   const data_prazo = new Date(file.prazo);
   const today = new Date();
 
-  return today < data_prazo ? false : true;
+  return today < data_prazo ? true : false;
 }
 
 const classIcons: Record<string, string> = {
