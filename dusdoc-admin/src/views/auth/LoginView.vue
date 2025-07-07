@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import "@/assets/css/main.css";
 import logoSystem from "@/assets/img/favicon.png";
-import FooterView from "@/components/FooterView.vue";
 import { api } from "@/defaults/axios";
 import type { LoginForm } from "@/types/forms";
 import { isAxiosError } from "axios";
@@ -104,7 +103,6 @@ async function handleSubmit(event: Event) {
         </form>
       </BOverlay>
     </div>
-    <FooterView />
   </div>
 </template>
 
