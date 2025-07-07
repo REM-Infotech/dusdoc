@@ -5,16 +5,31 @@ from pathlib import Path
 from typing import TypedDict
 from uuid import uuid4
 
+import aiofiles
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Environment, FileSystemLoader
-from quart import Blueprint, Request, current_app, jsonify, make_response, request
+from quart import (
+    Blueprint,
+    Request,
+    Response,
+    current_app,
+    jsonify,
+    make_response,
+    request,
+    send_file,  # noqa: F401
+    send_from_directory,
+)
+from quart.datastructures import FileStorage
 from quart.views import MethodView
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
 environment = Environment(
     loader=FileSystemLoader(Path(__file__).cwd().joinpath("dusdoc_api", "jinja")), autoescape=True
 )
+
+temp_path = Path(__file__).cwd().joinpath("dusdoc_api").joinpath("temp")
+temp_path.mkdir(exist_ok=True)
 
 
 class FormAdmissionalDict(TypedDict):  # noqa: D101
@@ -49,6 +64,37 @@ class FileModelDict(TypedDict):  # noqa: D101
     blob: bytes
 
 
+@admin.get("/file/funcionario/<int:id_arquivo>")
+async def retrive_file_funcionario(id_arquivo: int) -> Response:  # noqa: D103
+    from dusdoc_api.models.admissional import FileModel
+
+    db: SQLAlchemy = current_app.extensions["sqlalchemy"]
+
+    query = db.session.query(FileModel).filter(FileModel.id == id_arquivo).first()
+
+    fileobj = FileStorage(
+        query.blob,
+        filename=query.secondary_filename,
+        name=query.filename,
+        content_type=query.filetype,
+        content_length=query.size if query.size > 0 else len(query.blob),
+    )
+
+    file_path = temp_path.joinpath(uuid4().hex)
+    file_path.mkdir(exist_ok=True, parents=True)
+    file_path = file_path.joinpath(fileobj.filename)
+    async with aiofiles.open(file_path, "wb") as f:
+        await f.write(query.blob)
+    response = await make_response(
+        await send_from_directory(
+            file_path.parent.resolve(),
+            fileobj.filename,
+        )
+    )
+
+    return response
+
+
 @admin.route("/data/funcionario/<int:funcionario_id>")
 async def retrive_funcionario_form(funcionario_id: int) -> Request:  # noqa: D103
     from dusdoc_api.models.admissional import FileModel, FormAdmissional, RegistryAdmissao
@@ -71,14 +117,23 @@ async def retrive_funcionario_form(funcionario_id: int) -> Request:  # noqa: D10
         k: v for k, v in list(form.__dict__.items()) if not str(k).startswith("_") and not k == "files"
     })
 
-    def decode_blob(v: bytes | str) -> str | bytearray:
+    def decode_blob(v: bytes | str, k: str) -> str | bytearray:
         if isinstance(v, bytes):
             v = str(v)
+
+        if k == "filename":
+            v = " ".join(val.capitalize() for val in v.split("_"))
+            if "certidao" in v.lower():
+                v = v.replace("Certidao", "Certidão")
+            if len(v.split(" ")) == 1:
+                v = v.upper()
 
         return v
 
     files_dicted = [
-        FileModelDict(**{k: decode_blob(v) for k, v in list(file.__dict__.items()) if not k.startswith("_")})
+        FileModelDict(**{
+            k: decode_blob(v, k) for k, v in list(file.__dict__.items()) if not k.startswith("_") and not k == "blob"
+        })
         for file in files
     ]
 

@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { api } from "@/defaults/axios";
+import type { AxiosResponse } from "axios";
 import { BFormGroup, BFormInput } from "bootstrap-vue-next";
-import { reactive } from "vue";
-
-const form = reactive({
+import { onBeforeMount, reactive, ref, type IframeHTMLAttributes } from "vue";
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();
+const router = useRouter();
+const form = reactive<{ [key: string]: string }>({
   nome: "",
   cpf: "",
   data_nascimento: "",
@@ -20,7 +24,31 @@ const form = reactive({
   estadoCivil: "",
 });
 
-const arquivos = reactive({
+interface Arquivo {
+  id: number;
+  filename: string;
+  secondary_filename: string;
+  filetype: string;
+  size: number;
+  mimetype: number;
+  mimetype_params: Record<string, string>;
+}
+
+const currentFile = ref<Arquivo | null>(null);
+const fileView = ref<string>("");
+
+interface Arquivos {
+  [key: string]: string | Arquivo;
+  rg_cnh: string | Arquivo;
+  ctps: string | Arquivo;
+  comprovante_residencia: string | Arquivo;
+  titulo_eleitor: string | Arquivo;
+  certidao_reservista: string | Arquivo;
+  certidao_casamento: string | Arquivo;
+  certidao_divorcio: string | Arquivo;
+}
+
+const arquivos = reactive<Arquivos>({
   rg_cnh: "",
   ctps: "",
   comprovante_residencia: "",
@@ -30,12 +58,44 @@ const arquivos = reactive({
   certidao_divorcio: "",
 });
 
+onBeforeMount(async () => {
+  let response: AxiosResponse;
+  try {
+    response = await api.get(`/admin/data/funcionario/${route.params.funcionario_id}`);
+
+    if (response.data.dados) {
+      const dataRequest: Record<string, string> = response.data.dados;
+      Object.entries(form).map(([key, _]) => {
+        form[key] = dataRequest[key];
+      });
+
+      (Array.from(response.data.arquivos) as Arquivo[]).map((value: Arquivo) => {
+        arquivos[value.filename] = value;
+      });
+    }
+  } catch {
+    // alert("Erro ao obter informações de funcionário");
+    // router.push({ name: "funcionarios" });
+  }
+});
+
 function handleSubmit(e: Event) {
   e.preventDefault();
 }
 
 function validState(data: unknown) {
   return data ? false : null;
+}
+
+function checkType(val: unknown) {
+  return typeof val === "string";
+}
+
+function setFileView(file: Arquivo) {
+  currentFile.value = file;
+
+  (document.getElementById("pdfFrame") as unknown as IframeHTMLAttributes).src =
+    import.meta.env.VITE_API_URL + `/admin/file/funcionario/${file.id}`;
 }
 </script>
 
@@ -153,10 +213,29 @@ function validState(data: unknown) {
         tabindex="0"
       >
         <div>
-          <div class="files-list">
-            <div v-for="(file, key) in arquivos" :key="key" class="file-item">
-              <a v-if="file && typeof file === 'string'" :href="file" target="_blank">Visualizar</a>
-              <span v-else>Nenhum arquivo enviado</span>
+          <div class="row g-3">
+            <div class="col-6">
+              <div v-for="(file, key) in arquivos" :key="key" class="file-item">
+                <div
+                  v-if="!checkType(file)"
+                  class="d-flex flex-column rounded rounded-4 border p-3 gap-4"
+                >
+                  <span>{{ file.filename }}</span>
+                  <button class="btn btn-primary" @click="setFileView(file)">Visualizar</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 p-3">
+              <div class="card" style="height: 65dvh">
+                <div class="card-body">
+                  <iframe
+                    id="pdfFrame"
+                    src=""
+                    frameborder="0"
+                    class="w-100 h-100 pdf-frame"
+                  ></iframe>
+                </div>
+              </div>
             </div>
           </div>
         </div>
