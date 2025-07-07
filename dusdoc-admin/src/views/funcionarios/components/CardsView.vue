@@ -212,7 +212,7 @@ DataTable.use(DataTablesCore);
                   </template>
                   Realizar Admissão
                 </BTooltip>
-                <BTooltip v-else-if="props.rowData[4] === 'EM ANDAMENTO'">
+                <BTooltip v-else-if="props.rowData[4] === 'AGUARDANDO ANÁLISE'">
                   <template #target>
                     <button
                       class="btn btn-outline-warning"

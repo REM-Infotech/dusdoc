@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BFormGroup, BFormInput } from "bootstrap-vue-next";
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 
 const form = reactive({
   nome: "",
@@ -30,12 +30,8 @@ const arquivos = reactive({
   certidao_divorcio: "",
 });
 
-const errors = ref<any>({});
-const success = ref(false);
-
 function handleSubmit(e: Event) {
   e.preventDefault();
-  errors.value = {};
 }
 
 function validState(data: unknown) {
@@ -136,112 +132,17 @@ function validState(data: unknown) {
             >
               <BFormInput id="input-cep" v-model="form.cep" trim />
             </BFormGroup>
-
-            <div class="form-group">
-              <label for="endereco">Endereço</label>
-              <input
-                v-model="form.endereco"
-                id="endereco"
-                type="text"
-                :class="{ invalid: errors.endereco }"
-              />
-              <span v-if="errors.endereco" class="error">{{ errors.endereco }}</span>
-            </div>
-            <div class="form-group">
-              <label for="numero_residencia">Número</label>
-              <input
-                v-model="form.numero_residencia"
-                id="numero_residencia"
-                type="text"
-                :class="{ invalid: errors.numero_residencia }"
-              />
-              <span v-if="errors.numero_residencia" class="error">{{
-                errors.numero_residencia
-              }}</span>
-            </div>
-            <div class="form-group">
-              <label for="complemento">Complemento</label>
-              <input v-model="form.complemento" id="complemento" type="text" />
-            </div>
-            <div class="form-group">
-              <label for="cidade">Cidade</label>
-              <input
-                v-model="form.cidade"
-                id="cidade"
-                type="text"
-                :class="{ invalid: errors.cidade }"
-              />
-              <span v-if="errors.cidade" class="error">{{ errors.cidade }}</span>
-            </div>
-            <div class="form-group">
-              <label for="estado">Estado</label>
-              <input
-                v-model="form.estado"
-                id="estado"
-                type="text"
-                :class="{ invalid: errors.estado }"
-              />
-              <span v-if="errors.estado" class="error">{{ errors.estado }}</span>
-            </div>
-            <div class="form-group">
-              <label for="genero">Gênero</label>
-              <select v-model="form.genero" id="genero" :class="{ invalid: errors.genero }">
-                <option value="">Selecione</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Feminino">Feminino</option>
-                <option value="Outro">Outro</option>
-              </select>
-              <span v-if="errors.genero" class="error">{{ errors.genero }}</span>
-            </div>
-            <div class="form-group">
-              <label for="corRaca">Cor/Raça</label>
-              <select v-model="form.corRaca" id="corRaca" :class="{ invalid: errors.corRaca }">
-                <option value="">Selecione</option>
-                <option value="Branco">Branco</option>
-                <option value="Preto">Preto</option>
-                <option value="Pardo">Pardo</option>
-                <option value="Amarelo">Amarelo</option>
-                <option value="Indígena">Indígena</option>
-              </select>
-              <span v-if="errors.corRaca" class="error">{{ errors.corRaca }}</span>
-            </div>
-            <div class="form-group">
-              <label for="grauEscolaridade">Grau de Escolaridade</label>
-              <select
-                v-model="form.grauEscolaridade"
-                id="grauEscolaridade"
-                :class="{ invalid: errors.grauEscolaridade }"
-              >
-                <option value="">Selecione</option>
-                <option value="Fundamental Incompleto">Fundamental Incompleto</option>
-                <option value="Fundamental Completo">Fundamental Completo</option>
-                <option value="Médio Incompleto">Médio Incompleto</option>
-                <option value="Médio Completo">Médio Completo</option>
-                <option value="Superior Incompleto">Superior Incompleto</option>
-                <option value="Superior Completo">Superior Completo</option>
-              </select>
-              <span v-if="errors.grauEscolaridade" class="error">{{
-                errors.grauEscolaridade
-              }}</span>
-            </div>
-            <div class="form-group">
-              <label for="estadoCivil">Estado Civil</label>
-              <select
-                v-model="form.estadoCivil"
-                id="estadoCivil"
-                :class="{ invalid: errors.estadoCivil }"
-              >
-                <option value="">Selecione</option>
-                <option value="Solteiro">Solteiro</option>
-                <option value="Casado">Casado</option>
-                <option value="Divorciado">Divorciado</option>
-                <option value="Viúvo">Viúvo</option>
-              </select>
-              <span v-if="errors.estadoCivil" class="error">{{ errors.estadoCivil }}</span>
-            </div>
+            <BFormGroup
+              class="mb-3"
+              id="fieldset-endereco"
+              label="Endereço"
+              label-for="input-endereco"
+              label-class="mb-1"
+            >
+              <BFormInput id="input-endereco" v-model="form.endereco" trim />
+            </BFormGroup>
             <button class="btn btn-success" type="submit">Validar Dados</button>
           </form>
-          <div v-if="success" class="success">Dados validados com sucesso!</div>
         </div>
       </div>
       <div
