@@ -14,10 +14,6 @@ from quart_socketio import SocketIO
 from dusdoc_api.app.domain.admin.namespaces.funcionarios import FuncionariosNamespace
 from dusdoc_api.app.domain.admin.routes import registry_endpoint_admin
 
-# from dusdoc_api.app.domain.admin.namespaces.docs import adminDocsNamespace
-# from dusdoc_api.app.domain.admin.namespaces.forms import adminFormsNamespace
-# from dusdoc_api.app.domain.admin.namespaces.system import DusdocNamespace
-
 
 async def register_routes_admin(app: Quart) -> None:
     """

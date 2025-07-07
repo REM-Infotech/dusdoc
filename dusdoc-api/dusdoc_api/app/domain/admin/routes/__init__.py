@@ -8,13 +8,81 @@ from uuid import uuid4
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Environment, FileSystemLoader
-from quart import Blueprint, current_app, jsonify, make_response, request
+from quart import Blueprint, Request, current_app, jsonify, make_response, request
 from quart.views import MethodView
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
 environment = Environment(
     loader=FileSystemLoader(Path(__file__).cwd().joinpath("dusdoc_api", "jinja")), autoescape=True
 )
+
+
+class FormAdmissionalDict(TypedDict):  # noqa: D101
+    id: int
+    submited: bool
+    nome: str
+    cpf: str
+    email: str
+    data_nascimento: str
+    telefone: str
+    endereco: str
+    complemento: str
+    cidade: str
+    cep: str
+    estado: str
+    genero: str
+    corRaca: str  # noqa: N815
+    grauEscolaridade: str  # noqa: N815
+    estadoCivil: str  # noqa: N815
+    numero_residencia: str
+    form_registry_id: int
+
+
+class FileModelDict(TypedDict):  # noqa: D101
+    id: int
+    filename: str
+    secondary_filename: str
+    filetype: str
+    size: int
+    mimetype: int
+    mimetype_params: dict
+    blob: bytes
+
+
+@admin.route("/data/funcionario/<int:funcionario_id>")
+async def retrive_funcionario_form(funcionario_id: int) -> Request:  # noqa: D103
+    from dusdoc_api.models.admissional import FileModel, FormAdmissional, RegistryAdmissao
+
+    db: SQLAlchemy = current_app.extensions["sqlalchemy"]
+
+    query = (  # noqa: F841
+        db.session.query(RegistryAdmissao)
+        .filter(
+            RegistryAdmissao.funcionario_id == funcionario_id,
+        )
+        .first()
+    )
+
+    form: FormAdmissional = query.form_registry[-1]
+
+    files: list[FileModel] = form.files
+
+    data_dicted = FormAdmissionalDict(**{
+        k: v for k, v in list(form.__dict__.items()) if not str(k).startswith("_") and not k == "files"
+    })
+
+    def decode_blob(v: bytes | str) -> str | bytearray:
+        if isinstance(v, bytes):
+            v = str(v)
+
+        return v
+
+    files_dicted = [
+        FileModelDict(**{k: decode_blob(v) for k, v in list(file.__dict__.items()) if not k.startswith("_")})
+        for file in files
+    ]
+
+    return await make_response(jsonify(dados=data_dicted, arquivos=files_dicted))
 
 
 class Funcionario(TypedDict):  # noqa: D101
