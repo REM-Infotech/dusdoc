@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import FooterView from "./FooterView.vue";
 import HeaderView from "./HeaderView.vue";
 import SidebarView from "./SidebarView.vue";
 
@@ -17,7 +16,6 @@ const toggle = ref(false);
         <div class="container-fluid px-4 overflow-y-auto mb-auto" id="page-slot">
           <slot></slot>
         </div>
-        <FooterView style="max-height: 55px" />
       </div>
     </div>
   </div>
