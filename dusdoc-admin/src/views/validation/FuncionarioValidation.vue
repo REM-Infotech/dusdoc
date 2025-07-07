@@ -101,145 +101,152 @@ function setFileView(file: Arquivo) {
 
 <template>
   <h1 class="mt-4 fw-bold text-body-secondary">Validação de Dados do Funcionário</h1>
-  <div class="container-fluid bg-dark rounded rounded-4 p-2 mt-4">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link active"
-          id="DadosTab"
-          data-bs-toggle="tab"
-          data-bs-target="#DadosTab-pane"
-          type="button"
-          role="tab"
-          aria-controls="DadosTab-pane"
-          aria-selected="true"
-        >
-          Home
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="ArquivosTab"
-          data-bs-toggle="tab"
-          data-bs-target="#ArquivosTab-pane"
-          type="button"
-          role="tab"
-          aria-controls="ArquivosTab-pane"
-          aria-selected="false"
-        >
-          Profile
-        </button>
-      </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-      <div
-        class="tab-pane fade show active"
-        id="DadosTab-pane"
-        role="tabpanel"
-        aria-labelledby="DadosTab"
-        tabindex="0"
-      >
-        <div class="p-3">
-          <form @submit="handleSubmit">
-            <BFormGroup
-              class="mb-3"
-              id="fieldset-nome"
-              label="Nome"
-              label-for="input-nome"
-              label-class="mb-1"
+  <div class="card">
+    <div class="card-body">
+      <div class="container-fluid bg-dark rounded rounded-4 p-2 mt-4">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="DadosTab"
+              data-bs-toggle="tab"
+              data-bs-target="#DadosTab-pane"
+              type="button"
+              role="tab"
+              aria-controls="DadosTab-pane"
+              aria-selected="true"
             >
-              <BFormInput id="input-nome" v-model="form.nome" trim />
-            </BFormGroup>
-            <BFormGroup
-              class="mb-3"
-              id="fieldset-cpf"
-              label="CPF"
-              label-for="input-CPF"
-              label-class="mb-1"
+              Home
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="ArquivosTab"
+              data-bs-toggle="tab"
+              data-bs-target="#ArquivosTab-pane"
+              type="button"
+              role="tab"
+              aria-controls="ArquivosTab-pane"
+              aria-selected="false"
             >
-              <BFormInput id="input-CPF" v-model="form.cpf" trim />
-            </BFormGroup>
-            <BFormGroup
-              class="mb-3"
-              id="fieldset-data-nascimento"
-              label="Data de Nascimento"
-              label-for="input-data-nascimento"
-              label-class="mb-1"
-            >
-              <BFormInput
-                id="input-data-nascimento"
-                type="date"
-                v-model="form.data_nascimento"
-                trim
-              />
-            </BFormGroup>
-            <BFormGroup
-              class="mb-3"
-              id="fieldset-telefone"
-              label="Telefone"
-              label-for="input-telefone"
-              label-class="mb-1"
-            >
-              <BFormInput id="input-telefone" v-model="form.telefone" trim />
-            </BFormGroup>
-            <BFormGroup
-              class="mb-3"
-              id="fieldset-cep"
-              label="CEP"
-              label-for="input-cep"
-              label-class="mb-1"
-            >
-              <BFormInput id="input-cep" v-model="form.cep" trim />
-            </BFormGroup>
-            <BFormGroup
-              class="mb-3"
-              id="fieldset-endereco"
-              label="Endereço"
-              label-for="input-endereco"
-              label-class="mb-1"
-            >
-              <BFormInput id="input-endereco" v-model="form.endereco" trim />
-            </BFormGroup>
-            <button class="btn btn-success" type="submit">Validar Dados</button>
-          </form>
-        </div>
-      </div>
-      <div
-        class="tab-pane fade"
-        id="ArquivosTab-pane"
-        role="tabpanel"
-        aria-labelledby="ArquivosTab"
-        tabindex="0"
-      >
-        <div>
-          <div class="row g-3">
-            <div class="col-6">
-              <div v-for="(file, key) in arquivos" :key="key" class="file-item">
-                <div
-                  v-if="!checkType(file)"
-                  class="d-flex flex-column rounded rounded-4 border p-3 gap-4"
+              Profile
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="DadosTab-pane"
+            role="tabpanel"
+            aria-labelledby="DadosTab"
+            tabindex="0"
+          >
+            <div class="p-3">
+              <form @submit="handleSubmit">
+                <BFormGroup
+                  class="mb-3"
+                  id="fieldset-nome"
+                  label="Nome"
+                  label-for="input-nome"
+                  label-class="mb-1"
                 >
-                  <span>{{ file.filename }}</span>
-                  <button class="btn btn-primary" @click="setFileView(file)">Visualizar</button>
-                </div>
-              </div>
+                  <BFormInput id="input-nome" v-model="form.nome" trim />
+                </BFormGroup>
+                <BFormGroup
+                  class="mb-3"
+                  id="fieldset-cpf"
+                  label="CPF"
+                  label-for="input-CPF"
+                  label-class="mb-1"
+                >
+                  <BFormInput id="input-CPF" v-model="form.cpf" trim />
+                </BFormGroup>
+                <BFormGroup
+                  class="mb-3"
+                  id="fieldset-data-nascimento"
+                  label="Data de Nascimento"
+                  label-for="input-data-nascimento"
+                  label-class="mb-1"
+                >
+                  <BFormInput
+                    id="input-data-nascimento"
+                    type="date"
+                    v-model="form.data_nascimento"
+                    trim
+                  />
+                </BFormGroup>
+                <BFormGroup
+                  class="mb-3"
+                  id="fieldset-telefone"
+                  label="Telefone"
+                  label-for="input-telefone"
+                  label-class="mb-1"
+                >
+                  <BFormInput id="input-telefone" v-model="form.telefone" trim />
+                </BFormGroup>
+                <BFormGroup
+                  class="mb-3"
+                  id="fieldset-cep"
+                  label="CEP"
+                  label-for="input-cep"
+                  label-class="mb-1"
+                >
+                  <BFormInput id="input-cep" v-model="form.cep" trim />
+                </BFormGroup>
+                <BFormGroup
+                  class="mb-3"
+                  id="fieldset-endereco"
+                  label="Endereço"
+                  label-for="input-endereco"
+                  label-class="mb-1"
+                >
+                  <BFormInput id="input-endereco" v-model="form.endereco" trim />
+                </BFormGroup>
+              </form>
             </div>
-            <div class="col-6 p-3">
-              <div class="card" style="height: 65dvh">
-                <div class="card-body">
-                  <iframe
-                    id="pdfFrame"
-                    src=""
-                    frameborder="0"
-                    class="w-100 h-100 pdf-frame"
-                  ></iframe>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="ArquivosTab-pane"
+            role="tabpanel"
+            aria-labelledby="ArquivosTab"
+            tabindex="0"
+          >
+            <div>
+              <div class="row g-3">
+                <div class="col-6">
+                  <div v-for="(file, key) in arquivos" :key="key" class="file-item">
+                    <div
+                      v-if="!checkType(file)"
+                      class="d-flex flex-column rounded rounded-4 border p-3 gap-4"
+                    >
+                      <span>{{ file.filename }}</span>
+                      <button class="btn btn-primary" @click="setFileView(file)">Visualizar</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 p-3">
+                  <div class="card" style="height: 65dvh">
+                    <div class="card-body">
+                      <iframe
+                        id="pdfFrame"
+                        src=""
+                        frameborder="0"
+                        class="w-100 h-100 pdf-frame"
+                      ></iframe>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="card-footer d-flex justify-content-end gap-3">
+      <button class="btn btn-warning btn-lg">Solicitar ajustes</button>
+      <button class="btn btn-success btn-lg">Concluir Admissão</button>
     </div>
   </div>
 </template>
